@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 import { SaleItem } from '@/types/shop';
 
 export default function Sales() {
-  const { customers, products, sales, addSale } = useShop();
+  const { customers, products, sales, addSale, getNextInvoiceNo } = useShop();
   const [customerId, setCustomerId] = useState('');
   const [paymentMode, setPaymentMode] = useState<'Cash' | 'Due'>('Cash');
   const [items, setItems] = useState<SaleItem[]>([]);
@@ -113,7 +113,7 @@ export default function Sales() {
               <div className="flex justify-between items-start">
                 <div>
                   <p className="font-semibold">{s.customerName}</p>
-                  <p className="text-sm text-muted-foreground">{s.items.length} items • {s.paymentMode}</p>
+                  <p className="text-sm text-muted-foreground">{s.invoiceNo || ''} • {s.items.length} items • {s.paymentMode}</p>
                 </div>
                 <div className="text-right">
                   <p className="font-bold">₹{s.totalBill.toLocaleString()}</p>

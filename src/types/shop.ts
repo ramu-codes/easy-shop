@@ -46,6 +46,7 @@ export interface SaleItem {
 
 export interface SaleEntry {
   id: string;
+  invoiceNo: string;
   customerId: string;
   customerName: string;
   items: SaleItem[];
@@ -68,4 +69,31 @@ export interface PaymentRecord {
   customerName: string;
   amount: number;
   date: string;
+}
+
+export interface Employee {
+  id: string;
+  name: string;
+  phone: string;
+  role: string;
+  salary: number;
+  joinDate: string;
+  createdAt: string;
+}
+
+export interface AttendanceRecord {
+  id: string;
+  employeeId: string;
+  date: string;
+  status: 'Present' | 'Absent' | 'Half Day';
+}
+
+export interface SalaryPayment {
+  id: string;
+  employeeId: string;
+  employeeName: string;
+  amount: number;
+  month: string;
+  date: string;
+  note: string;
 }
