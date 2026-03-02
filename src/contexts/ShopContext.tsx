@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { Customer, Seller, Product, PurchaseEntry, SaleEntry, Expense, PaymentRecord } from '@/types/shop';
+import { Customer, Seller, Product, PurchaseEntry, SaleEntry, Expense, PaymentRecord, Employee, AttendanceRecord, SalaryPayment } from '@/types/shop';
 
 interface ShopState {
   customers: Customer[];
@@ -9,6 +9,9 @@ interface ShopState {
   sales: SaleEntry[];
   expenses: Expense[];
   payments: PaymentRecord[];
+  employees: Employee[];
+  attendance: AttendanceRecord[];
+  salaryPayments: SalaryPayment[];
   isLoggedIn: boolean;
   shopName: string;
 }
@@ -26,9 +29,15 @@ interface ShopContextType extends ShopState {
   updateProduct: (id: string, p: Partial<Product>) => void;
   deleteProduct: (id: string) => void;
   addPurchase: (p: Omit<PurchaseEntry, 'id'>) => void;
-  addSale: (s: Omit<SaleEntry, 'id'>) => void;
+  addSale: (s: Omit<SaleEntry, 'id' | 'invoiceNo'>) => void;
   addExpense: (e: Omit<Expense, 'id'>) => void;
   addPayment: (p: Omit<PaymentRecord, 'id'>) => void;
+  addEmployee: (e: Omit<Employee, 'id' | 'createdAt'>) => void;
+  updateEmployee: (id: string, e: Partial<Employee>) => void;
+  deleteEmployee: (id: string) => void;
+  markAttendance: (a: Omit<AttendanceRecord, 'id'>) => void;
+  addSalaryPayment: (p: Omit<SalaryPayment, 'id'>) => void;
+  getNextInvoiceNo: () => string;
 }
 
 const ShopContext = createContext<ShopContextType | null>(null);
@@ -50,6 +59,9 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [sales, setSales] = useState<SaleEntry[]>(() => load('shop_sales', []));
   const [expenses, setExpenses] = useState<Expense[]>(() => load('shop_expenses', []));
   const [payments, setPayments] = useState<PaymentRecord[]>(() => load('shop_payments', []));
+  const [employees, setEmployees] = useState<Employee[]>(() => load('shop_employees', []));
+  const [attendance, setAttendance] = useState<AttendanceRecord[]>(() => load('shop_attendance', []));
+  const [salaryPayments, setSalaryPayments] = useState<SalaryPayment[]>(() => load('shop_salary_payments', []));
   const [isLoggedIn, setIsLoggedIn] = useState(() => load('shop_logged_in', false));
   const [shopName, setShopName] = useState(() => load('shop_name', ''));
 
@@ -60,6 +72,9 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => { localStorage.setItem('shop_sales', JSON.stringify(sales)); }, [sales]);
   useEffect(() => { localStorage.setItem('shop_expenses', JSON.stringify(expenses)); }, [expenses]);
   useEffect(() => { localStorage.setItem('shop_payments', JSON.stringify(payments)); }, [payments]);
+  useEffect(() => { localStorage.setItem('shop_employees', JSON.stringify(employees)); }, [employees]);
+  useEffect(() => { localStorage.setItem('shop_attendance', JSON.stringify(attendance)); }, [attendance]);
+  useEffect(() => { localStorage.setItem('shop_salary_payments', JSON.stringify(salaryPayments)); }, [salaryPayments]);
 
   const login = useCallback((name: string, password: string) => {
     if (password === 'admin123') {
@@ -112,8 +127,14 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setProducts(prev => prev.map(x => x.id === p.itemId ? { ...x, stock: x.stock + p.quantity } : x));
   }, []);
 
-  const addSale = useCallback((s: Omit<SaleEntry, 'id'>) => {
-    setSales(prev => [...prev, { ...s, id: uid() }]);
+  const getNextInvoiceNo = useCallback(() => {
+    const num = sales.length + 1;
+    return `INV-${String(num).padStart(4, '0')}`;
+  }, [sales.length]);
+
+  const addSale = useCallback((s: Omit<SaleEntry, 'id' | 'invoiceNo'>) => {
+    const invoiceNo = `INV-${String(sales.length + 1).padStart(4, '0')}`;
+    setSales(prev => [...prev, { ...s, id: uid(), invoiceNo }]);
     setProducts(prev => {
       let updated = [...prev];
       s.items.forEach(item => {
@@ -124,7 +145,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (s.paymentMode === 'Due') {
       setCustomers(prev => prev.map(c => c.id === s.customerId ? { ...c, dueAmount: c.dueAmount + s.totalBill } : c));
     }
-  }, []);
+  }, [sales.length]);
 
   const addExpense = useCallback((e: Omit<Expense, 'id'>) => {
     setExpenses(prev => [...prev, { ...e, id: uid() }]);
@@ -135,15 +156,42 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCustomers(prev => prev.map(c => c.id === p.customerId ? { ...c, dueAmount: Math.max(0, c.dueAmount - p.amount) } : c));
   }, []);
 
+  const addEmployee = useCallback((e: Omit<Employee, 'id' | 'createdAt'>) => {
+    setEmployees(prev => [...prev, { ...e, id: uid(), createdAt: new Date().toISOString() }]);
+  }, []);
+  const updateEmployee = useCallback((id: string, e: Partial<Employee>) => {
+    setEmployees(prev => prev.map(x => x.id === id ? { ...x, ...e } : x));
+  }, []);
+  const deleteEmployee = useCallback((id: string) => {
+    setEmployees(prev => prev.filter(x => x.id !== id));
+  }, []);
+
+  const markAttendance = useCallback((a: Omit<AttendanceRecord, 'id'>) => {
+    setAttendance(prev => {
+      const existing = prev.findIndex(x => x.employeeId === a.employeeId && x.date === a.date);
+      if (existing >= 0) {
+        return prev.map((x, i) => i === existing ? { ...x, status: a.status } : x);
+      }
+      return [...prev, { ...a, id: uid() }];
+    });
+  }, []);
+
+  const addSalaryPayment = useCallback((p: Omit<SalaryPayment, 'id'>) => {
+    setSalaryPayments(prev => [...prev, { ...p, id: uid() }]);
+  }, []);
+
   return (
     <ShopContext.Provider value={{
       customers, sellers, products, purchases, sales, expenses, payments,
+      employees, attendance, salaryPayments,
       isLoggedIn, shopName,
       login, logout,
       addCustomer, updateCustomer, deleteCustomer,
       addSeller, updateSeller, deleteSeller,
       addProduct, updateProduct, deleteProduct,
       addPurchase, addSale, addExpense, addPayment,
+      addEmployee, updateEmployee, deleteEmployee,
+      markAttendance, addSalaryPayment, getNextInvoiceNo,
     }}>
       {children}
     </ShopContext.Provider>

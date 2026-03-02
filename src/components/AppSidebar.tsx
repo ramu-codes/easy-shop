@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, Package, Users, UserCheck, ShoppingCart, Receipt,
-  TrendingUp, TrendingDown, Clock, CreditCard, LogOut, Store
+  TrendingUp, TrendingDown, Clock, CreditCard, LogOut, Store, UserCheck2, FileText
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -21,6 +21,8 @@ const navItems = [
   { title: "Daily Expense", url: "/daily-expense", icon: TrendingDown },
   { title: "Balance Due", url: "/balance-due", icon: Clock },
   { title: "Pay Balance", url: "/pay-balance", icon: CreditCard },
+  { title: "Employees", url: "/employees", icon: UserCheck2 },
+  { title: "Invoice", url: "/invoice", icon: FileText },
 ];
 
 export function AppSidebar() {

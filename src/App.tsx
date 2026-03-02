@@ -16,6 +16,8 @@ import DailyIncome from "@/pages/DailyIncome";
 import DailyExpense from "@/pages/DailyExpense";
 import BalanceDue from "@/pages/BalanceDue";
 import PayBalance from "@/pages/PayBalance";
+import Employees from "@/pages/Employees";
+import Invoice from "@/pages/Invoice";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +40,8 @@ function AppRoutes() {
         <Route path="/daily-expense" element={<DailyExpense />} />
         <Route path="/balance-due" element={<BalanceDue />} />
         <Route path="/pay-balance" element={<PayBalance />} />
+        <Route path="/employees" element={<Employees />} />
+        <Route path="/invoice" element={<Invoice />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
