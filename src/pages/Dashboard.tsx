@@ -29,6 +29,15 @@ export default function Dashboard() {
     return Object.values(map).sort((a, b) => b.qty - a.qty).slice(0, 10);
   }, [sales]);
 
+  const leastProducts = useMemo(() => {
+    const map: Record<string, { name: string; qty: number }> = {};
+    sales.forEach(s => s.items.forEach(i => {
+      if (!map[i.productId]) map[i.productId] = { name: i.productName, qty: 0 };
+      map[i.productId].qty += i.quantity;
+    }));
+    return Object.values(map).sort((a, b) => a.qty - b.qty).slice(0, 10);
+  }, [sales]);
+
   const topCustomers = useMemo(() => {
     const map: Record<string, { name: string; total: number }> = {};
     sales.forEach(s => {
@@ -58,7 +67,7 @@ export default function Dashboard() {
       <div className="grid md:grid-cols-2 gap-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Top Selling Products</CardTitle>
+            <CardTitle className="text-base">Top 10 Most Selling Products</CardTitle>
           </CardHeader>
           <CardContent>
             {topProducts.length === 0 ? (
@@ -70,6 +79,26 @@ export default function Dashboard() {
                   <YAxis tick={{ fontSize: 11 }} />
                   <Tooltip />
                   <Bar dataKey="qty" fill="hsl(174, 60%, 38%)" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Top 10 Least Selling Products</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {leastProducts.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-4 text-center">No sales data yet</p>
+            ) : (
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={leastProducts}>
+                  <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+                  <YAxis tick={{ fontSize: 11 }} />
+                  <Tooltip />
+                  <Bar dataKey="qty" fill="hsl(0, 70%, 50%)" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}
