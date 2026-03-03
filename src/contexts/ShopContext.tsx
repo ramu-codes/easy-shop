@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { Customer, Seller, Product, PurchaseEntry, SaleEntry, Expense, PaymentRecord, Employee, AttendanceRecord, SalaryPayment } from '@/types/shop';
+import { Customer, Seller, Product, PurchaseEntry, SaleEntry, Expense, PaymentRecord, Employee, AttendanceRecord, SalaryPayment, DailyEntry } from '@/types/shop';
 
-interface ShopState {
+interface ShopContextType {
   customers: Customer[];
   sellers: Seller[];
   products: Product[];
@@ -12,11 +12,9 @@ interface ShopState {
   employees: Employee[];
   attendance: AttendanceRecord[];
   salaryPayments: SalaryPayment[];
+  dailyEntries: DailyEntry[];
   isLoggedIn: boolean;
   shopName: string;
-}
-
-interface ShopContextType extends ShopState {
   login: (shopName: string, password: string) => boolean;
   logout: () => void;
   addCustomer: (c: Omit<Customer, 'id' | 'createdAt'>) => void;
@@ -37,6 +35,9 @@ interface ShopContextType extends ShopState {
   deleteEmployee: (id: string) => void;
   markAttendance: (a: Omit<AttendanceRecord, 'id'>) => void;
   addSalaryPayment: (p: Omit<SalaryPayment, 'id'>) => void;
+  addDailyEntry: (e: Omit<DailyEntry, 'id' | 'createdAt'>) => void;
+  updateDailyEntry: (id: string, e: Partial<DailyEntry>) => void;
+  deleteDailyEntry: (id: string) => void;
   getNextInvoiceNo: () => string;
 }
 
@@ -62,6 +63,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [employees, setEmployees] = useState<Employee[]>(() => load('shop_employees', []));
   const [attendance, setAttendance] = useState<AttendanceRecord[]>(() => load('shop_attendance', []));
   const [salaryPayments, setSalaryPayments] = useState<SalaryPayment[]>(() => load('shop_salary_payments', []));
+  const [dailyEntries, setDailyEntries] = useState<DailyEntry[]>(() => load('shop_daily_entries', []));
   const [isLoggedIn, setIsLoggedIn] = useState(() => load('shop_logged_in', false));
   const [shopName, setShopName] = useState(() => load('shop_name', ''));
 
@@ -75,6 +77,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => { localStorage.setItem('shop_employees', JSON.stringify(employees)); }, [employees]);
   useEffect(() => { localStorage.setItem('shop_attendance', JSON.stringify(attendance)); }, [attendance]);
   useEffect(() => { localStorage.setItem('shop_salary_payments', JSON.stringify(salaryPayments)); }, [salaryPayments]);
+  useEffect(() => { localStorage.setItem('shop_daily_entries', JSON.stringify(dailyEntries)); }, [dailyEntries]);
 
   const login = useCallback((name: string, password: string) => {
     if (password === 'admin123') {
@@ -142,10 +145,12 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       return updated;
     });
-    if (s.paymentMode === 'Due') {
+    // Auto-add customer if not exists
+    const existingCustomer = customers.find(c => c.id === s.customerId);
+    if (s.paymentMode === 'Due' && existingCustomer) {
       setCustomers(prev => prev.map(c => c.id === s.customerId ? { ...c, dueAmount: c.dueAmount + s.totalBill } : c));
     }
-  }, [sales.length]);
+  }, [sales.length, customers]);
 
   const addExpense = useCallback((e: Omit<Expense, 'id'>) => {
     setExpenses(prev => [...prev, { ...e, id: uid() }]);
@@ -180,10 +185,20 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setSalaryPayments(prev => [...prev, { ...p, id: uid() }]);
   }, []);
 
+  const addDailyEntry = useCallback((e: Omit<DailyEntry, 'id' | 'createdAt'>) => {
+    setDailyEntries(prev => [...prev, { ...e, id: uid(), createdAt: new Date().toISOString() }]);
+  }, []);
+  const updateDailyEntry = useCallback((id: string, e: Partial<DailyEntry>) => {
+    setDailyEntries(prev => prev.map(x => x.id === id ? { ...x, ...e } : x));
+  }, []);
+  const deleteDailyEntry = useCallback((id: string) => {
+    setDailyEntries(prev => prev.filter(x => x.id !== id));
+  }, []);
+
   return (
     <ShopContext.Provider value={{
       customers, sellers, products, purchases, sales, expenses, payments,
-      employees, attendance, salaryPayments,
+      employees, attendance, salaryPayments, dailyEntries,
       isLoggedIn, shopName,
       login, logout,
       addCustomer, updateCustomer, deleteCustomer,
@@ -191,7 +206,9 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       addProduct, updateProduct, deleteProduct,
       addPurchase, addSale, addExpense, addPayment,
       addEmployee, updateEmployee, deleteEmployee,
-      markAttendance, addSalaryPayment, getNextInvoiceNo,
+      markAttendance, addSalaryPayment,
+      addDailyEntry, updateDailyEntry, deleteDailyEntry,
+      getNextInvoiceNo,
     }}>
       {children}
     </ShopContext.Provider>

@@ -18,13 +18,13 @@ import BalanceDue from "@/pages/BalanceDue";
 import PayBalance from "@/pages/PayBalance";
 import Employees from "@/pages/Employees";
 import Invoice from "@/pages/Invoice";
+import DailyTracker from "@/pages/DailyTracker";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
 function AppRoutes() {
   const { isLoggedIn } = useShop();
-
   if (!isLoggedIn) return <Login />;
 
   return (
@@ -42,6 +42,7 @@ function AppRoutes() {
         <Route path="/pay-balance" element={<PayBalance />} />
         <Route path="/employees" element={<Employees />} />
         <Route path="/invoice" element={<Invoice />} />
+        <Route path="/daily-tracker" element={<DailyTracker />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

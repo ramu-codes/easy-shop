@@ -1,9 +1,8 @@
 import {
   LayoutDashboard, Package, Users, UserCheck, ShoppingCart, Receipt,
-  TrendingUp, TrendingDown, Clock, CreditCard, LogOut, Store, UserCheck2, FileText
+  TrendingUp, TrendingDown, Clock, CreditCard, LogOut, Store, UserCheck2, FileText, Calculator
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
-import { useLocation } from "react-router-dom";
 import { useShop } from "@/contexts/ShopContext";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
@@ -13,22 +12,22 @@ import {
 const navItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Products", url: "/products", icon: Package },
-  { title: "Sellers", url: "/sellers", icon: UserCheck },
+  { title: "Sales", url: "/sales", icon: Receipt },
+  { title: "Invoice", url: "/invoice", icon: FileText },
   { title: "Customers", url: "/customers", icon: Users },
   { title: "Purchase", url: "/purchase", icon: ShoppingCart },
-  { title: "Sales", url: "/sales", icon: Receipt },
+  { title: "Sellers", url: "/sellers", icon: UserCheck },
+  { title: "Employees", url: "/employees", icon: UserCheck2 },
+  { title: "Daily Tracker", url: "/daily-tracker", icon: Calculator },
   { title: "Daily Income", url: "/daily-income", icon: TrendingUp },
   { title: "Daily Expense", url: "/daily-expense", icon: TrendingDown },
   { title: "Balance Due", url: "/balance-due", icon: Clock },
   { title: "Pay Balance", url: "/pay-balance", icon: CreditCard },
-  { title: "Employees", url: "/employees", icon: UserCheck2 },
-  { title: "Invoice", url: "/invoice", icon: FileText },
 ];
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const location = useLocation();
   const { shopName, logout } = useShop();
 
   return (
@@ -36,7 +35,7 @@ export function AppSidebar() {
       <SidebarContent>
         <div className={`px-4 py-5 flex items-center gap-3 border-b border-sidebar-border ${collapsed ? 'justify-center' : ''}`}>
           <Store className="h-7 w-7 text-sidebar-primary shrink-0" />
-          {!collapsed && <span className="font-bold text-lg text-sidebar-foreground truncate">{shopName || 'ShopOne'}</span>}
+          {!collapsed && <span className="font-bold text-lg text-sidebar-foreground truncate">{shopName || 'Verma Fancy Store'}</span>}
         </div>
         <SidebarGroup>
           <SidebarGroupContent>

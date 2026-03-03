@@ -1,6 +1,7 @@
 export interface Customer {
   id: string;
   name: string;
+  phone: string;
   location: string;
   dueAmount: number;
   createdAt: string;
@@ -20,6 +21,7 @@ export interface Product {
   purchasePrice: number;
   sellPrice: number;
   stock: number;
+  image: string;
   createdAt: string;
 }
 
@@ -41,6 +43,8 @@ export interface SaleItem {
   productName: string;
   quantity: number;
   sellPrice: number;
+  mrp: number;
+  discount: number;
   total: number;
 }
 
@@ -49,9 +53,10 @@ export interface SaleEntry {
   invoiceNo: string;
   customerId: string;
   customerName: string;
+  customerPhone: string;
   items: SaleItem[];
   totalBill: number;
-  paymentMode: 'Cash' | 'Due';
+  paymentMode: 'Cash' | 'Online' | 'Due';
   date: string;
 }
 
@@ -96,4 +101,15 @@ export interface SalaryPayment {
   month: string;
   date: string;
   note: string;
+}
+
+export interface DailyEntry {
+  id: string;
+  type: 'revenue' | 'expenditure';
+  title: string;
+  amount: number;
+  category: string;
+  date: string;
+  time: string;
+  createdAt: string;
 }
