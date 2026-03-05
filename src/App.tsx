@@ -10,14 +10,8 @@ import Dashboard from "@/pages/Dashboard";
 import Products from "@/pages/Products";
 import Sellers from "@/pages/Sellers";
 import Customers from "@/pages/Customers";
-import Purchase from "@/pages/Purchase";
 import Sales from "@/pages/Sales";
-import DailyIncome from "@/pages/DailyIncome";
-import DailyExpense from "@/pages/DailyExpense";
-import BalanceDue from "@/pages/BalanceDue";
-import PayBalance from "@/pages/PayBalance";
 import Employees from "@/pages/Employees";
-import Invoice from "@/pages/Invoice";
 import DailyTracker from "@/pages/DailyTracker";
 import NotFound from "./pages/NotFound";
 
@@ -34,14 +28,8 @@ function AppRoutes() {
         <Route path="/products" element={<Products />} />
         <Route path="/sellers" element={<Sellers />} />
         <Route path="/customers" element={<Customers />} />
-        <Route path="/purchase" element={<Purchase />} />
         <Route path="/sales" element={<Sales />} />
-        <Route path="/daily-income" element={<DailyIncome />} />
-        <Route path="/daily-expense" element={<DailyExpense />} />
-        <Route path="/balance-due" element={<BalanceDue />} />
-        <Route path="/pay-balance" element={<PayBalance />} />
         <Route path="/employees" element={<Employees />} />
-        <Route path="/invoice" element={<Invoice />} />
         <Route path="/daily-tracker" element={<DailyTracker />} />
         <Route path="*" element={<NotFound />} />
       </Route>

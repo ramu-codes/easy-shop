@@ -1,6 +1,6 @@
 import {
-  LayoutDashboard, Package, Users, UserCheck, ShoppingCart, Receipt,
-  TrendingUp, TrendingDown, Clock, CreditCard, LogOut, Store, UserCheck2, FileText, Calculator
+  LayoutDashboard, Package, Users, UserCheck, Receipt,
+  LogOut, Store, UserCheck2, Calculator
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useShop } from "@/contexts/ShopContext";
@@ -13,16 +13,10 @@ const navItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Products", url: "/products", icon: Package },
   { title: "Sales", url: "/sales", icon: Receipt },
-  { title: "Invoice", url: "/invoice", icon: FileText },
   { title: "Customers", url: "/customers", icon: Users },
-  { title: "Purchase", url: "/purchase", icon: ShoppingCart },
-  { title: "Sellers", url: "/sellers", icon: UserCheck },
+  { title: "Buy / Sellers", url: "/sellers", icon: UserCheck },
   { title: "Employees", url: "/employees", icon: UserCheck2 },
   { title: "Daily Tracker", url: "/daily-tracker", icon: Calculator },
-  { title: "Daily Income", url: "/daily-income", icon: TrendingUp },
-  { title: "Daily Expense", url: "/daily-expense", icon: TrendingDown },
-  { title: "Balance Due", url: "/balance-due", icon: Clock },
-  { title: "Pay Balance", url: "/pay-balance", icon: CreditCard },
 ];
 
 export function AppSidebar() {
