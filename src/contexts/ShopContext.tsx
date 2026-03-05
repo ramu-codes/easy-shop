@@ -27,7 +27,11 @@ interface ShopContextType {
   updateProduct: (id: string, p: Partial<Product>) => void;
   deleteProduct: (id: string) => void;
   addPurchase: (p: Omit<PurchaseEntry, 'id'>) => void;
+  updatePurchase: (id: string, p: Partial<PurchaseEntry>) => void;
+  deletePurchase: (id: string) => void;
   addSale: (s: Omit<SaleEntry, 'id' | 'invoiceNo'>) => void;
+  updateSale: (id: string, s: Partial<SaleEntry>) => void;
+  deleteSale: (id: string) => void;
   addExpense: (e: Omit<Expense, 'id'>) => void;
   addPayment: (p: Omit<PaymentRecord, 'id'>) => void;
   addEmployee: (e: Omit<Employee, 'id' | 'createdAt'>) => void;
@@ -81,8 +85,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = useCallback((name: string, password: string) => {
     if (password === 'admin123') {
-      setIsLoggedIn(true);
-      setShopName(name);
+      setIsLoggedIn(true); setShopName(name);
       localStorage.setItem('shop_logged_in', 'true');
       localStorage.setItem('shop_name', JSON.stringify(name));
       return true;
@@ -90,10 +93,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return false;
   }, []);
 
-  const logout = useCallback(() => {
-    setIsLoggedIn(false);
-    localStorage.setItem('shop_logged_in', 'false');
-  }, []);
+  const logout = useCallback(() => { setIsLoggedIn(false); localStorage.setItem('shop_logged_in', 'false'); }, []);
 
   const addCustomer = useCallback((c: Omit<Customer, 'id' | 'createdAt'>) => {
     setCustomers(prev => [...prev, { ...c, id: uid(), createdAt: new Date().toISOString() }]);
@@ -101,9 +101,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateCustomer = useCallback((id: string, c: Partial<Customer>) => {
     setCustomers(prev => prev.map(x => x.id === id ? { ...x, ...c } : x));
   }, []);
-  const deleteCustomer = useCallback((id: string) => {
-    setCustomers(prev => prev.filter(x => x.id !== id));
-  }, []);
+  const deleteCustomer = useCallback((id: string) => { setCustomers(prev => prev.filter(x => x.id !== id)); }, []);
 
   const addSeller = useCallback((s: Omit<Seller, 'id' | 'createdAt'>) => {
     setSellers(prev => [...prev, { ...s, id: uid(), createdAt: new Date().toISOString() }]);
@@ -111,9 +109,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateSeller = useCallback((id: string, s: Partial<Seller>) => {
     setSellers(prev => prev.map(x => x.id === id ? { ...x, ...s } : x));
   }, []);
-  const deleteSeller = useCallback((id: string) => {
-    setSellers(prev => prev.filter(x => x.id !== id));
-  }, []);
+  const deleteSeller = useCallback((id: string) => { setSellers(prev => prev.filter(x => x.id !== id)); }, []);
 
   const addProduct = useCallback((p: Omit<Product, 'id' | 'createdAt' | 'stock'>) => {
     setProducts(prev => [...prev, { ...p, id: uid(), stock: 0, createdAt: new Date().toISOString() }]);
@@ -121,18 +117,35 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateProduct = useCallback((id: string, p: Partial<Product>) => {
     setProducts(prev => prev.map(x => x.id === id ? { ...x, ...p } : x));
   }, []);
-  const deleteProduct = useCallback((id: string) => {
-    setProducts(prev => prev.filter(x => x.id !== id));
-  }, []);
+  const deleteProduct = useCallback((id: string) => { setProducts(prev => prev.filter(x => x.id !== id)); }, []);
 
   const addPurchase = useCallback((p: Omit<PurchaseEntry, 'id'>) => {
     setPurchases(prev => [...prev, { ...p, id: uid() }]);
-    setProducts(prev => prev.map(x => x.id === p.itemId ? { ...x, stock: x.stock + p.quantity } : x));
+    // Update stock
+    setProducts(prev => {
+      const existing = prev.find(x => x.id === p.itemId);
+      if (existing) {
+        return prev.map(x => x.id === p.itemId ? { ...x, stock: x.stock + p.quantity, purchasePrice: p.purchasePrice, sellPrice: p.sellPrice || x.sellPrice } : x);
+      }
+      // New product from purchase
+      return [...prev, { id: p.itemId || uid(), itemName: p.itemName, printPrice: p.sellPrice || 0, purchasePrice: p.purchasePrice, sellPrice: p.sellPrice || 0, stock: p.quantity, image: p.image || '', createdAt: new Date().toISOString() }];
+    });
+  }, []);
+  const updatePurchase = useCallback((id: string, p: Partial<PurchaseEntry>) => {
+    setPurchases(prev => prev.map(x => x.id === id ? { ...x, ...p } : x));
+  }, []);
+  const deletePurchase = useCallback((id: string) => {
+    setPurchases(prev => {
+      const purchase = prev.find(x => x.id === id);
+      if (purchase) {
+        setProducts(prods => prods.map(p => p.id === purchase.itemId ? { ...p, stock: Math.max(0, p.stock - purchase.quantity) } : p));
+      }
+      return prev.filter(x => x.id !== id);
+    });
   }, []);
 
   const getNextInvoiceNo = useCallback(() => {
-    const num = sales.length + 1;
-    return `INV-${String(num).padStart(4, '0')}`;
+    return `INV-${String(sales.length + 1).padStart(4, '0')}`;
   }, [sales.length]);
 
   const addSale = useCallback((s: Omit<SaleEntry, 'id' | 'invoiceNo'>) => {
@@ -145,16 +158,39 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       return updated;
     });
-    // Auto-add customer if not exists
-    const existingCustomer = customers.find(c => c.id === s.customerId);
-    if (s.paymentMode === 'Due' && existingCustomer) {
-      setCustomers(prev => prev.map(c => c.id === s.customerId ? { ...c, dueAmount: c.dueAmount + s.totalBill } : c));
+    if (s.paymentMode === 'Due') {
+      const existing = customers.find(c => c.id === s.customerId);
+      if (existing) {
+        setCustomers(prev => prev.map(c => c.id === s.customerId ? { ...c, dueAmount: c.dueAmount + s.totalBill } : c));
+      }
     }
   }, [sales.length, customers]);
 
-  const addExpense = useCallback((e: Omit<Expense, 'id'>) => {
-    setExpenses(prev => [...prev, { ...e, id: uid() }]);
+  const updateSale = useCallback((id: string, s: Partial<SaleEntry>) => {
+    setSales(prev => prev.map(x => x.id === id ? { ...x, ...s } : x));
   }, []);
+  const deleteSale = useCallback((id: string) => {
+    setSales(prev => {
+      const sale = prev.find(x => x.id === id);
+      if (sale) {
+        // Restore stock
+        setProducts(prods => {
+          let updated = [...prods];
+          sale.items.forEach(item => {
+            updated = updated.map(p => p.id === item.productId ? { ...p, stock: p.stock + item.quantity } : p);
+          });
+          return updated;
+        });
+        // Restore due
+        if (sale.paymentMode === 'Due') {
+          setCustomers(prev => prev.map(c => c.id === sale.customerId ? { ...c, dueAmount: Math.max(0, c.dueAmount - sale.totalBill) } : c));
+        }
+      }
+      return prev.filter(x => x.id !== id);
+    });
+  }, []);
+
+  const addExpense = useCallback((e: Omit<Expense, 'id'>) => { setExpenses(prev => [...prev, { ...e, id: uid() }]); }, []);
 
   const addPayment = useCallback((p: Omit<PaymentRecord, 'id'>) => {
     setPayments(prev => [...prev, { ...p, id: uid() }]);
@@ -167,16 +203,12 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateEmployee = useCallback((id: string, e: Partial<Employee>) => {
     setEmployees(prev => prev.map(x => x.id === id ? { ...x, ...e } : x));
   }, []);
-  const deleteEmployee = useCallback((id: string) => {
-    setEmployees(prev => prev.filter(x => x.id !== id));
-  }, []);
+  const deleteEmployee = useCallback((id: string) => { setEmployees(prev => prev.filter(x => x.id !== id)); }, []);
 
   const markAttendance = useCallback((a: Omit<AttendanceRecord, 'id'>) => {
     setAttendance(prev => {
       const existing = prev.findIndex(x => x.employeeId === a.employeeId && x.date === a.date);
-      if (existing >= 0) {
-        return prev.map((x, i) => i === existing ? { ...x, status: a.status } : x);
-      }
+      if (existing >= 0) return prev.map((x, i) => i === existing ? { ...x, status: a.status } : x);
       return [...prev, { ...a, id: uid() }];
     });
   }, []);
@@ -191,20 +223,19 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateDailyEntry = useCallback((id: string, e: Partial<DailyEntry>) => {
     setDailyEntries(prev => prev.map(x => x.id === id ? { ...x, ...e } : x));
   }, []);
-  const deleteDailyEntry = useCallback((id: string) => {
-    setDailyEntries(prev => prev.filter(x => x.id !== id));
-  }, []);
+  const deleteDailyEntry = useCallback((id: string) => { setDailyEntries(prev => prev.filter(x => x.id !== id)); }, []);
 
   return (
     <ShopContext.Provider value={{
       customers, sellers, products, purchases, sales, expenses, payments,
       employees, attendance, salaryPayments, dailyEntries,
-      isLoggedIn, shopName,
-      login, logout,
+      isLoggedIn, shopName, login, logout,
       addCustomer, updateCustomer, deleteCustomer,
       addSeller, updateSeller, deleteSeller,
       addProduct, updateProduct, deleteProduct,
-      addPurchase, addSale, addExpense, addPayment,
+      addPurchase, updatePurchase, deletePurchase,
+      addSale, updateSale, deleteSale,
+      addExpense, addPayment,
       addEmployee, updateEmployee, deleteEmployee,
       markAttendance, addSalaryPayment,
       addDailyEntry, updateDailyEntry, deleteDailyEntry,

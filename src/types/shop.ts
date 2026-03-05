@@ -11,6 +11,7 @@ export interface Seller {
   id: string;
   name: string;
   location: string;
+  phone: string;
   createdAt: string;
 }
 
@@ -36,6 +37,9 @@ export interface PurchaseEntry {
   totalAmount: number;
   dueAmount: number;
   date: string;
+  image: string;
+  estimatedProfit: number;
+  sellPrice: number;
 }
 
 export interface SaleItem {
@@ -56,6 +60,7 @@ export interface SaleEntry {
   customerPhone: string;
   items: SaleItem[];
   totalBill: number;
+  totalDiscount: number;
   paymentMode: 'Cash' | 'Online' | 'Due';
   date: string;
 }
