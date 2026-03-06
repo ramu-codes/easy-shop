@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ShopProvider, useShop } from "@/contexts/ShopContext";
 import Layout from "@/components/Layout";
-import Login from "@/pages/Login";
+import LandingPage from "@/pages/LandingPage";
 import Dashboard from "@/pages/Dashboard";
 import Products from "@/pages/Products";
 import Sellers from "@/pages/Sellers";
@@ -13,13 +13,14 @@ import Customers from "@/pages/Customers";
 import Sales from "@/pages/Sales";
 import Employees from "@/pages/Employees";
 import DailyTracker from "@/pages/DailyTracker";
+import Expenditure from "@/pages/Expenditure";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
 function AppRoutes() {
   const { isLoggedIn } = useShop();
-  if (!isLoggedIn) return <Login />;
+  if (!isLoggedIn) return <LandingPage />;
 
   return (
     <Routes>
@@ -31,6 +32,7 @@ function AppRoutes() {
         <Route path="/sales" element={<Sales />} />
         <Route path="/employees" element={<Employees />} />
         <Route path="/daily-tracker" element={<DailyTracker />} />
+        <Route path="/expenditure" element={<Expenditure />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
