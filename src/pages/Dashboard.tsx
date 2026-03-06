@@ -184,7 +184,7 @@ export default function Dashboard() {
                 <p className="text-sm font-bold text-emerald-600">₹{totalSales.toLocaleString()}</p>
               </div>
             </button>
-            <button onClick={() => navigate('/daily-tracker')} className="flex items-center gap-2 p-3 rounded-lg bg-red-50 dark:bg-red-950 hover:ring-2 hover:ring-red-300 transition-all">
+            <button onClick={() => navigate('/expenditure')} className="flex items-center gap-2 p-3 rounded-lg bg-red-50 dark:bg-red-950 hover:ring-2 hover:ring-red-300 transition-all">
               <TrendingDown className="h-4 w-4 text-red-500" />
               <div className="text-left">
                 <p className="text-[10px] text-muted-foreground">Total Expenses</p>
