@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, Package, Users, UserCheck, Receipt,
-  LogOut, Store, UserCheck2, Calculator
+  LogOut, Store, UserCheck2, Calculator, TrendingDown
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useShop } from "@/contexts/ShopContext";
@@ -15,6 +15,7 @@ const navItems = [
   { title: "Sales", url: "/sales", icon: Receipt },
   { title: "Customers", url: "/customers", icon: Users },
   { title: "Buy / Sellers", url: "/sellers", icon: UserCheck },
+  { title: "Expenditure", url: "/expenditure", icon: TrendingDown },
   { title: "Employees", url: "/employees", icon: UserCheck2 },
   { title: "Daily Tracker", url: "/daily-tracker", icon: Calculator },
 ];
