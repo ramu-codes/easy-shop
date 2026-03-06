@@ -22,7 +22,7 @@ export default function Expenditure() {
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
     if (!category || !amount || !date) { toast.error('Fill all fields'); return; }
-    addExpense({ category, amount: Number(amount), description, date });
+    addExpense({ category, amount: Number(amount), title: description, date });
     toast.success('Expense added');
     setCategory(''); setAmount(''); setDescription('');
     setShowForm(false);
@@ -113,7 +113,7 @@ export default function Expenditure() {
             <CardContent className="py-3 px-4 flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-foreground">{e.category || 'Other'}</p>
-                {e.description && <p className="text-xs text-muted-foreground">{e.description}</p>}
+                {e.title && <p className="text-xs text-muted-foreground">{e.title}</p>}
                 <p className="text-[10px] text-muted-foreground mt-0.5">{e.date}</p>
               </div>
               <p className="text-base font-bold text-destructive">₹{e.amount.toLocaleString()}</p>
