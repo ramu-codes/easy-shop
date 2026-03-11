@@ -4,6 +4,7 @@ import {
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useShop } from "@/contexts/ShopContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarFooter, useSidebar,
@@ -24,6 +25,7 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const { shopName, logout } = useShop();
+  const { t } = useLanguage();
 
   return (
     <Sidebar collapsible="icon">
@@ -45,7 +47,7 @@ export function AppSidebar() {
                       activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-semibold"
                     >
                       <item.icon className="h-5 w-5 shrink-0" />
-                      {!collapsed && <span className="text-sm">{item.title}</span>}
+                      {!collapsed && <span className="text-sm">{t(item.title)}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -60,7 +62,7 @@ export function AppSidebar() {
           className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-destructive transition-colors"
         >
           <LogOut className="h-5 w-5 shrink-0" />
-          {!collapsed && <span className="text-sm">Logout</span>}
+          {!collapsed && <span className="text-sm">{t('Logout')}</span>}
         </button>
       </SidebarFooter>
     </Sidebar>
