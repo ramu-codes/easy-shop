@@ -128,7 +128,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return prev.map(x => x.id === p.itemId ? { ...x, stock: x.stock + p.quantity, purchasePrice: p.purchasePrice, sellPrice: p.sellPrice || x.sellPrice } : x);
       }
       // New product from purchase
-      return [...prev, { id: p.itemId || uid(), itemName: p.itemName, printPrice: p.sellPrice || 0, purchasePrice: p.purchasePrice, sellPrice: p.sellPrice || 0, stock: p.quantity, image: p.image || '', createdAt: new Date().toISOString() }];
+      return [...prev, { id: p.itemId || uid(), itemName: p.itemName, printPrice: p.sellPrice || 0, purchasePrice: p.purchasePrice, sellPrice: p.sellPrice || 0, stock: p.quantity, image: p.image || '', category: 'Other', createdAt: new Date().toISOString() }];
     });
   }, []);
   const updatePurchase = useCallback((id: string, p: Partial<PurchaseEntry>) => {
