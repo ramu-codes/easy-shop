@@ -23,6 +23,7 @@ export interface Product {
   sellPrice: number;
   stock: number;
   image: string;
+  category: string;
   createdAt: string;
 }
 
