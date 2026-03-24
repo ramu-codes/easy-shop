@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Store, Phone, User, ChevronDown, ChevronUp, Star, ShoppingBag, Sparkles, MapPin, Clock, Mail, Eye, EyeOff, TrendingUp, Users, Package, BarChart3, Calculator, Receipt, Shield } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Store, Phone, ChevronDown, ChevronUp, Star, Sparkles, MapPin, Clock, Mail, Eye, EyeOff, TrendingUp, Users, Package, BarChart3, Calculator, Receipt, Shield, Heart, Zap, Award, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -35,7 +35,7 @@ const aboutContent = {
   en: {
     title: 'Complete Shop Management Solution',
     subtitle: 'Designed for Indian Retail Businesses',
-    description: 'Easy Shop is a comprehensive business management system specifically designed for retail stores, fancy shops, and small businesses across India. Our platform helps you manage every aspect of your business - from inventory and sales to customer relationships and financial tracking.',
+    description: 'Easy Shop is a comprehensive business management system specifically designed for retail stores, fancy shops, and small businesses across India.',
     benefits: [
       'Manage products, customers, and suppliers all in one place',
       'Track sales, purchases, and inventory automatically',
@@ -45,13 +45,12 @@ const aboutContent = {
       'Generate digital invoices and share them instantly',
       'Get real-time business analytics and insights',
       'Work offline - all data stored securely on your device',
-      'Available in English and Hindi for your convenience'
     ]
   },
   hi: {
     title: 'संपूर्ण दुकान प्रबंधन समाधान',
     subtitle: 'भारतीय खुदरा व्यवसायों के लिए डिज़ाइन किया गया',
-    description: 'ईज़ी शॉप एक व्यापक व्यवसाय प्रबंधन प्रणाली है जो विशेष रूप से खुदरा स्टोर, फैंसी दुकानों और भारत भर के छोटे व्यवसायों के लिए डिज़ाइन की गई है। हमारा प्लेटफॉर्म आपको अपने व्यवसाय के हर पहलू को प्रबंधित करने में मदद करता है - इन्वेंटरी और बिक्री से लेकर ग्राहक संबंधों और वित्तीय ट्रैकिंग तक।',
+    description: 'ईज़ी शॉप एक व्यापक व्यवसाय प्रबंधन प्रणाली है जो विशेष रूप से खुदरा स्टोर, फैंसी दुकानों और भारत भर के छोटे व्यवसायों के लिए डिज़ाइन की गई है।',
     benefits: [
       'एक ही स्थान पर उत्पाद, ग्राहक और आपूर्तिकर्ता प्रबंधित करें',
       'बिक्री, खरीद और इन्वेंटरी स्वचालित रूप से ट्रैक करें',
@@ -61,32 +60,46 @@ const aboutContent = {
       'डिजिटल चालान बनाएं और तुरंत साझा करें',
       'वास्तविक समय व्यवसाय विश्लेषण और अंतर्दृष्टि प्राप्त करें',
       'ऑफ़लाइन काम करें - सभी डेटा आपके डिवाइस पर सुरक्षित रूप से संग्रहीत',
-      'आपकी सुविधा के लिए अंग्रेजी और हिंदी में उपलब्ध'
     ]
   }
 };
 
 const faqs = {
   en: [
-    { q: 'What is Easy Shop and how does it help my business?', a: 'Easy Shop is a complete shop management system that helps you track sales, manage inventory, handle customer dues, monitor expenses, and calculate profits. It simplifies daily operations and gives you real-time insights to grow your business.' },
-    { q: 'Do I need internet connection to use this system?', a: 'No! Easy Shop works completely offline. All your data is stored securely on your device, so you can manage your business even without internet connectivity.' },
-    { q: 'Is my business data safe and secure?', a: 'Yes, absolutely! All your business data is stored locally on your device using secure browser storage. No data is sent to external servers, ensuring complete privacy and security.' },
-    { q: 'Can I use this system in Hindi language?', a: 'Yes! Easy Shop supports both English and Hindi languages. You can switch between languages anytime based on your preference from the settings.' },
-    { q: 'What features are included in the system?', a: 'The system includes: Product & Inventory Management, Sales & Invoicing, Customer & Supplier Management, Purchase Tracking, Expense Management, Employee Management & Attendance, Payment Tracking, Daily Revenue/Expense Tracker, and Detailed Business Analytics Dashboard.' },
-    { q: 'How do I get started?', a: 'Simply click the "Shop Manager Login" button, enter your shop name and the default password (admin123) to access the complete system. You can start adding your products, customers, and begin managing your business right away!' },
+    { q: 'What is Easy Shop?', a: 'Easy Shop is a complete shop management system that helps you track sales, manage inventory, handle customer dues, monitor expenses, and calculate profits.' },
+    { q: 'Do I need internet?', a: 'No! Easy Shop works completely offline. All your data is stored securely on your device.' },
+    { q: 'Is my data safe?', a: 'Yes! All data is stored locally on your device. No data is sent to external servers.' },
+    { q: 'Can I use Hindi?', a: 'Yes! Switch between English and Hindi anytime from the settings.' },
+    { q: 'How do I get started?', a: 'Click Login, enter your shop name and password (default: admin123) to access the system.' },
   ],
   hi: [
-    { q: 'ईज़ी शॉप क्या है और यह मेरे व्यवसाय की कैसे मदद करता है?', a: 'ईज़ी शॉप एक संपूर्ण दुकान प्रबंधन प्रणाली है जो आपको बिक्री ट्रैक करने, इन्वेंटरी प्रबंधित करने, ग्राहक बकाया संभालने, खर्चों की निगरानी करने और मुनाफे की गणना करने में मदद करती है। यह दैनिक संचालन को सरल बनाती है और आपको अपने व्यवसाय को बढ़ाने के लिए वास्तविक समय की जानकारी देती है।' },
-    { q: 'क्या मुझे इस प्रणाली का उपयोग करने के लिए इंटरनेट कनेक्शन की आवश्यकता है?', a: 'नहीं! ईज़ी शॉप पूरी तरह से ऑफ़लाइन काम करता है। आपका सभी डेटा आपके डिवाइस पर सुरक्षित रूप से संग्रहीत है, इसलिए आप इंटरनेट कनेक्टिविटी के बिना भी अपने व्यवसाय का प्रबंधन कर सकते हैं।' },
-    { q: 'क्या मेरा व्यवसाय डेटा सुरक्षित है?', a: 'हां, बिल्कुल! आपका सभी व्यवसाय डेटा सुरक्षित ब्राउज़र स्टोरेज का उपयोग करके स्थानीय रूप से आपके डिवाइस पर संग्रहीत है। कोई डेटा बाहरी सर्वर को नहीं भेजा जाता है, जो पूर्ण गोपनीयता और सुरक्षा सुनिश्चित करता है।' },
-    { q: 'क्या मैं इस प्रणाली को हिंदी भाषा में उपयोग कर सकता हूं?', a: 'हां! ईज़ी शॉप अंग्रेजी और हिंदी दोनों भाषाओं का समर्थन करता है। आप सेटिंग्स से अपनी प्राथमिकता के आधार पर किसी भी समय भाषाओं के बीच स्विच कर सकते हैं।' },
-    { q: 'प्रणाली में कौन सी सुविधाएं शामिल हैं?', a: 'प्रणाली में शामिल हैं: उत्पाद और इन्वेंटरी प्रबंधन, बिक्री और चालान, ग्राहक और आपूर्तिकर्ता प्रबंधन, खरीद ट्रैकिंग, खर्च प्रबंधन, कर्मचारी प्रबंधन और उपस्थिति, भुगतान ट्रैकिंग, दैनिक राजस्व/खर्च ट्रैकर, और विस्तृत व्यवसाय विश्लेषण डैशबोर्ड।' },
-    { q: 'मैं कैसे शुरू करूं?', a: 'बस "शॉप मैनेजर लॉगिन" बटन पर क्लिक करें, अपनी दुकान का नाम और डिफ़ॉल्ट पासवर्ड (admin123) दर्ज करें संपूर्ण प्रणाली तक पहुंचने के लिए। आप अपने उत्पादों, ग्राहकों को जोड़ना शुरू कर सकते हैं और तुरंत अपने व्यवसाय का प्रबंधन शुरू कर सकते हैं!' },
+    { q: 'ईज़ी शॉप क्या है?', a: 'ईज़ी शॉप एक संपूर्ण दुकान प्रबंधन प्रणाली है जो बिक्री ट्रैक करने, इन्वेंटरी प्रबंधित करने, ग्राहक बकाया संभालने और मुनाफे की गणना करने में मदद करती है।' },
+    { q: 'क्या इंटरनेट चाहिए?', a: 'नहीं! ईज़ी शॉप पूरी तरह ऑफ़लाइन काम करता है।' },
+    { q: 'क्या डेटा सुरक्षित है?', a: 'हां! सभी डेटा आपके डिवाइस पर स्थानीय रूप से संग्रहीत है।' },
+    { q: 'क्या हिंदी में उपयोग कर सकते हैं?', a: 'हां! सेटिंग्स से किसी भी समय भाषा बदलें।' },
+    { q: 'कैसे शुरू करें?', a: 'लॉगिन क्लिक करें, दुकान का नाम और पासवर्ड (admin123) दर्ज करें।' },
   ]
 };
 
-const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } };
-const stagger = { visible: { transition: { staggerChildren: 0.15 } } };
+const galleryImages = [
+  { src: heroImg, label: 'Our Store' },
+  { src: fashionImg, label: 'Fashion Collection' },
+  { src: accessoriesImg, label: 'Accessories' },
+  { src: productsImg, label: 'Products' },
+];
+
+const stats = [
+  { value: '500+', label: 'Products' },
+  { value: '1000+', label: 'Happy Customers' },
+  { value: '5+', label: 'Years Experience' },
+  { value: '24/7', label: 'Support' },
+];
+
+const fadeUp = { hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0 } };
+const fadeLeft = { hidden: { opacity: 0, x: -40 }, visible: { opacity: 1, x: 0 } };
+const fadeRight = { hidden: { opacity: 0, x: 40 }, visible: { opacity: 1, x: 0 } };
+const stagger = { visible: { transition: { staggerChildren: 0.12 } } };
+const scaleIn = { hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } };
 
 export default function LandingPage() {
   const [showLogin, setShowLogin] = useState(false);
@@ -108,151 +121,188 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       {/* Header */}
       <motion.header
-        initial={{ y: -60, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.6 }}
-        className="sticky top-0 z-50 bg-card/90 backdrop-blur-md border-b border-border shadow-sm"
+        initial={{ y: -80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.7, type: 'spring' }}
+        className="sticky top-0 z-50 bg-card/95 backdrop-blur-xl border-b border-border shadow-sm"
       >
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-11 w-11 rounded-xl bg-primary flex items-center justify-center">
+            <motion.div whileHover={{ rotate: 10, scale: 1.1 }} className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/25">
               <Store className="h-6 w-6 text-primary-foreground" />
+            </motion.div>
+            <div>
+              <span className="font-extrabold text-lg text-foreground tracking-tight">Verma Fancy Store</span>
+              <p className="text-[10px] text-muted-foreground -mt-0.5">Easy Shop Management</p>
             </div>
-            <span className="font-bold text-xl text-foreground">Easy Shop</span>
           </div>
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')}
-              className="text-sm font-medium h-10 px-4"
-            >
-              {language === 'en' ? 'हिंदी' : 'English'}
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')} className="text-xs font-semibold h-9 px-3">
+              {language === 'en' ? 'हिंदी' : 'EN'}
             </Button>
-            <a href="tel:+919876543210" className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
-              <Phone className="h-4 w-4" /> +91 98765 43210
-            </a>
-            <Button size="default" onClick={() => setShowLogin(true)} className="text-sm font-semibold h-10 px-6">
-              {language === 'en' ? 'Login' : 'लॉगिन'}
+            <Button size="sm" onClick={() => setShowLogin(true)} className="text-xs font-bold h-9 px-5 shadow-md shadow-primary/20">
+              {language === 'en' ? '🔐 Login' : '🔐 लॉगिन'}
             </Button>
           </div>
         </div>
       </motion.header>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
+      {/* Hero */}
+      <section className="relative overflow-hidden min-h-[85vh] flex items-center">
         <div className="absolute inset-0">
-          <img src={heroImg} alt="Shop Management System" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-foreground/85 via-foreground/65 to-foreground/35" />
+          <motion.img initial={{ scale: 1.1 }} animate={{ scale: 1 }} transition={{ duration: 1.5 }} src={heroImg} alt="Verma Fancy Store" className="w-full h-full object-cover" width={1920} height={1080} />
+          <div className="absolute inset-0 bg-gradient-to-r from-foreground/90 via-foreground/70 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
         </div>
-        <div className="relative max-w-6xl mx-auto px-4 py-20 sm:py-28 md:py-36">
-          <motion.div
-            initial="hidden" animate="visible" variants={stagger}
-            className="max-w-2xl"
-          >
-            <motion.div variants={fadeUp} transition={{ duration: 0.6 }}>
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/90 text-secondary-foreground text-sm font-semibold mb-5">
-                <Shield className="h-4 w-4" /> {language === 'en' ? 'Professional Shop Management System' : 'पेशेवर दुकान प्रबंधन प्रणाली'}
+        <div className="relative max-w-7xl mx-auto px-4 py-16 sm:py-24">
+          <motion.div initial="hidden" animate="visible" variants={stagger} className="max-w-2xl">
+            <motion.div variants={fadeUp} transition={{ duration: 0.7 }}>
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 backdrop-blur-md text-white text-sm font-semibold mb-6 border border-primary/30">
+                <Sparkles className="h-4 w-4 text-secondary" /> {language === 'en' ? '✨ Smart Shop Management' : '✨ स्मार्ट दुकान प्रबंधन'}
               </span>
             </motion.div>
-            <motion.h1 variants={fadeUp} transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-tight mb-5"
+            <motion.h1 variants={fadeUp} transition={{ duration: 0.7, delay: 0.1 }}
+              className="text-4xl sm:text-5xl md:text-7xl font-black text-white leading-[1.1] mb-6 tracking-tight"
             >
-              {language === 'en' ? 'Grow Your Business with Easy Shop' : 'ईज़ी शॉप के साथ अपना व्यवसाय बढ़ाएं'}
+              {language === 'en' ? (
+                <>Manage Your <span className="text-secondary">Business</span> Like a Pro</>
+              ) : (
+                <>अपने <span className="text-secondary">व्यवसाय</span> को प्रो की तरह प्रबंधित करें</>
+              )}
             </motion.h1>
-            <motion.p variants={fadeUp} transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-lg sm:text-xl md:text-2xl text-white/90 mb-4 font-medium"
+            <motion.p variants={fadeUp} transition={{ duration: 0.7, delay: 0.2 }}
+              className="text-lg sm:text-xl text-white/85 mb-8 max-w-lg leading-relaxed"
             >
               {language === 'en'
-                ? 'Complete solution for inventory, sales, customers & business analytics'
-                : 'इन्वेंटरी, बिक्री, ग्राहक और व्यवसाय विश्लेषण के लिए संपूर्ण समाधान'}
+                ? 'All-in-one solution for inventory, sales, invoicing, customer management & business analytics'
+                : 'इन्वेंटरी, बिक्री, चालान, ग्राहक प्रबंधन और व्यवसाय विश्लेषण के लिए ऑल-इन-वन समाधान'}
             </motion.p>
-            <motion.p variants={fadeUp} transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-base sm:text-lg text-white/75 mb-8"
-            >
-              {language === 'en'
-                ? '✓ Works Offline  ✓ Bilingual Support  ✓ No Monthly Fees'
-                : '✓ ऑफ़लाइन काम करता है  ✓ द्विभाषी समर्थन  ✓ कोई मासिक शुल्क नहीं'}
-            </motion.p>
-            <motion.div variants={fadeUp} transition={{ duration: 0.6, delay: 0.4 }} className="flex flex-wrap gap-4">
-              <Button size="lg" onClick={() => setShowLogin(true)} className="text-base font-bold h-14 px-8 shadow-lg">
-                {language === 'en' ? 'Start Managing Now' : 'अभी प्रबंधन शुरू करें'}
+            <motion.div variants={fadeUp} transition={{ duration: 0.7, delay: 0.3 }} className="flex flex-wrap gap-3">
+              <Button size="lg" onClick={() => setShowLogin(true)} className="text-base font-bold h-14 px-8 shadow-xl shadow-primary/30 gap-2">
+                {language === 'en' ? 'Start Managing' : 'शुरू करें'} <ArrowRight className="h-5 w-5" />
               </Button>
-              <Button size="lg" variant="outline" className="text-base font-semibold h-14 px-8 bg-white/10 border-white/30 text-white hover:bg-white/20"
-                onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+              <Button size="lg" variant="outline" className="text-base font-semibold h-14 px-8 bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm"
+                onClick={() => document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                {language === 'en' ? 'Learn More' : 'और जानें'}
+                {language === 'en' ? 'Explore Store' : 'स्टोर देखें'}
               </Button>
+            </motion.div>
+            <motion.div variants={fadeUp} transition={{ duration: 0.7, delay: 0.4 }}
+              className="flex gap-6 mt-8 text-white/70 text-sm"
+            >
+              <span className="flex items-center gap-1.5"><Zap className="h-4 w-4 text-secondary" /> Works Offline</span>
+              <span className="flex items-center gap-1.5"><Shield className="h-4 w-4 text-secondary" /> 100% Secure</span>
+              <span className="flex items-center gap-1.5"><Heart className="h-4 w-4 text-secondary" /> Free Forever</span>
             </motion.div>
           </motion.div>
         </div>
       </section>
 
-      {/* Business Features Grid */}
+      {/* Stats Counter */}
       <motion.section
-        initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={stagger}
-        className="bg-gradient-to-b from-primary/5 to-background border-y border-border py-16"
+        initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
+        className="bg-primary text-primary-foreground py-10 -mt-1"
+      >
+        <div className="max-w-6xl mx-auto px-4 grid grid-cols-2 sm:grid-cols-4 gap-6">
+          {stats.map((s, i) => (
+            <motion.div key={i} variants={scaleIn} transition={{ duration: 0.5 }} className="text-center">
+              <p className="text-3xl sm:text-4xl font-black">{s.value}</p>
+              <p className="text-sm text-primary-foreground/80 font-medium">{s.label}</p>
+            </motion.div>
+          ))}
+        </div>
+      </motion.section>
+
+      {/* Gallery */}
+      <section id="gallery" className="py-16 sm:py-20 bg-background">
+        <div className="max-w-6xl mx-auto px-4">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-black mb-3">{language === 'en' ? 'Our Store' : 'हमारी दुकान'}</h2>
+            <p className="text-muted-foreground text-lg">{language === 'en' ? 'A glimpse into Verma Fancy Store' : 'वर्मा फैंसी स्टोर की एक झलक'}</p>
+          </motion.div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
+            className="grid grid-cols-2 md:grid-cols-4 gap-4"
+          >
+            {galleryImages.map((img, i) => (
+              <motion.div key={i} variants={scaleIn} transition={{ duration: 0.5 }}
+                className="group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-lg"
+              >
+                <img src={img.src} alt={img.label} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <p className="absolute bottom-4 left-4 text-white font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500">{img.label}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <motion.section
+        initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
+        className="bg-muted/50 border-y border-border py-16 sm:py-20"
       >
         <div className="max-w-6xl mx-auto px-4">
           <motion.div variants={fadeUp} className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+            <h2 className="text-3xl sm:text-4xl font-black mb-3">
               {language === 'en' ? 'Why Choose Easy Shop?' : 'ईज़ी शॉप क्यों चुनें?'}
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              {language === 'en'
-                ? 'Everything you need to manage and grow your retail business efficiently'
-                : 'अपने खुदरा व्यवसाय को कुशलतापूर्वक प्रबंधित और बढ़ाने के लिए आपको जो कुछ भी चाहिए'}
+            <p className="text-muted-foreground text-lg max-w-xl mx-auto">
+              {language === 'en' ? 'Everything you need to grow your business' : 'आपके व्यवसाय को बढ़ाने के लिए सब कुछ'}
             </p>
           </motion.div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {businessFeatures[language].map((feature, i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {businessFeatures[language].map((f, i) => (
               <motion.div key={i} variants={fadeUp}
-                className="bg-card border border-border rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all hover:border-primary/40"
+                className="bg-card border border-border rounded-2xl p-6 shadow-sm hover:shadow-xl hover:border-primary/40 hover:-translate-y-1 transition-all duration-300"
               >
-                <div className="h-14 w-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                  <feature.icon className="h-7 w-7 text-primary" />
+                <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center mb-4">
+                  <f.icon className="h-7 w-7 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-2">{feature.title}</h3>
-                <p className="text-base text-muted-foreground leading-relaxed">{feature.desc}</p>
+                <h3 className="text-lg font-bold text-foreground mb-2">{f.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </motion.section>
 
-      {/* About Section with Details */}
+      {/* About */}
       <section id="about" className="max-w-6xl mx-auto px-4 py-16 sm:py-20">
-        <motion.div
-          initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
           className="grid lg:grid-cols-2 gap-12 items-center"
         >
-          <motion.div variants={fadeUp}>
-            <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-4">
-              {language === 'en' ? 'About Easy Shop' : 'ईज़ी शॉप के बारे में'}
+          <motion.div variants={fadeLeft} transition={{ duration: 0.7 }}>
+            <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-bold mb-4">
+              {language === 'en' ? '🏪 About Us' : '🏪 हमारे बारे में'}
             </span>
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">{aboutContent[language].title}</h2>
-            <p className="text-lg font-semibold text-primary mb-4">{aboutContent[language].subtitle}</p>
-            <p className="text-base text-muted-foreground leading-relaxed mb-6">
-              {aboutContent[language].description}
-            </p>
-            <Button size="lg" onClick={() => setShowLogin(true)} className="text-base font-semibold h-12 px-8">
-              {language === 'en' ? 'Get Started Free' : 'मुफ्त में शुरू करें'}
-            </Button>
+            <h2 className="text-3xl sm:text-4xl font-black mb-4">{aboutContent[language].title}</h2>
+            <p className="text-lg font-semibold text-primary mb-3">{aboutContent[language].subtitle}</p>
+            <p className="text-base text-muted-foreground leading-relaxed mb-6">{aboutContent[language].description}</p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <MapPin className="h-4 w-4 text-primary" /> Main Market, City Center
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Phone className="h-4 w-4 text-primary" /> +91 98765 43210
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Clock className="h-4 w-4 text-primary" /> 9 AM - 9 PM
+              </div>
+            </div>
           </motion.div>
-          <motion.div variants={fadeUp}>
-            <div className="bg-card border border-border rounded-2xl p-8 shadow-lg">
-              <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                <Star className="h-6 w-6 text-primary" />
-                {language === 'en' ? 'Key Benefits' : 'मुख्य लाभ'}
+          <motion.div variants={fadeRight} transition={{ duration: 0.7 }}>
+            <div className="bg-card border border-border rounded-2xl p-6 shadow-lg">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Award className="h-5 w-5 text-secondary" /> {language === 'en' ? 'Key Benefits' : 'मुख्य लाभ'}
               </h3>
-              <ul className="space-y-4">
-                {aboutContent[language].benefits.map((benefit, i) => (
+              <ul className="space-y-3">
+                {aboutContent[language].benefits.map((b, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-primary font-bold text-sm">✓</span>
+                    <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-primary font-bold text-xs">✓</span>
                     </div>
-                    <span className="text-base text-foreground leading-relaxed">{benefit}</span>
+                    <span className="text-sm text-foreground leading-relaxed">{b}</span>
                   </li>
                 ))}
               </ul>
@@ -261,151 +311,152 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
+      {/* Shop Info */}
+      <section className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background py-16 border-y border-border">
+        <div className="max-w-4xl mx-auto px-4">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center">
+            <motion.div variants={scaleIn} className="h-24 w-24 rounded-3xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-primary/30">
+              <Store className="h-12 w-12 text-primary-foreground" />
+            </motion.div>
+            <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-black mb-2">Verma Fancy Store</motion.h2>
+            <motion.p variants={fadeUp} className="text-lg text-muted-foreground mb-1">Director: Mr. Verma</motion.p>
+            <motion.div variants={fadeUp} className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground mt-4">
+              <span className="flex items-center gap-1.5"><Phone className="h-4 w-4 text-primary" /> +91 98765 43210</span>
+              <span className="flex items-center gap-1.5"><Mail className="h-4 w-4 text-primary" /> verma@shop.com</span>
+              <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-primary" /> Main Market, City Center</span>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* FAQ */}
-      <section className="bg-muted/50 py-16 sm:py-20">
+      <section className="py-16 sm:py-20 bg-background">
         <div className="max-w-3xl mx-auto px-4">
-          <motion.h2
-            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-            className="text-3xl sm:text-4xl font-bold text-center mb-12"
+          <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+            className="text-3xl font-black text-center mb-10"
           >
-            {language === 'en' ? 'Frequently Asked Questions' : 'अक्सर पूछे जाने वाले प्रश्न'}
+            {language === 'en' ? '❓ FAQ' : '❓ अक्सर पूछे जाने वाले प्रश्न'}
           </motion.h2>
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="space-y-4">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="space-y-3">
             {faqs[language].map((faq, i) => (
               <motion.div key={i} variants={fadeUp}>
-                <button
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between p-5 rounded-xl bg-card border border-border text-left hover:border-primary/40 transition-colors"
+                <button onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="w-full flex items-center justify-between p-4 rounded-xl bg-card border border-border text-left hover:border-primary/40 transition-all"
                 >
-                  <span className="text-base font-semibold text-foreground pr-4 leading-relaxed">{faq.q}</span>
-                  {openFaq === i ? <ChevronUp className="h-5 w-5 text-primary shrink-0" /> : <ChevronDown className="h-5 w-5 text-muted-foreground shrink-0" />}
+                  <span className="text-sm font-bold text-foreground pr-4">{faq.q}</span>
+                  {openFaq === i ? <ChevronUp className="h-4 w-4 text-primary shrink-0" /> : <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />}
                 </button>
-                {openFaq === i && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} transition={{ duration: 0.3 }}
-                    className="px-5 pb-4 pt-2"
-                  >
-                    <p className="text-base text-muted-foreground leading-relaxed">{faq.a}</p>
-                  </motion.div>
-                )}
+                <AnimatePresence>
+                  {openFaq === i && (
+                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }}
+                      className="px-4 pb-3 pt-2"
+                    >
+                      <p className="text-sm text-muted-foreground leading-relaxed">{faq.a}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             ))}
           </motion.div>
         </div>
       </section>
 
-      {/* Contact */}
-      <section className="max-w-6xl mx-auto px-4 py-16 sm:py-20">
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-          className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-3xl p-10 sm:p-16 text-center border border-primary/20"
+      {/* CTA */}
+      <section className="max-w-6xl mx-auto px-4 py-16">
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={scaleIn}
+          className="bg-gradient-to-r from-primary to-primary/80 rounded-3xl p-10 sm:p-16 text-center text-primary-foreground shadow-2xl shadow-primary/20"
         >
-          <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-6">
-            {language === 'en' ? 'Ready to Transform Your Business?' : 'अपने व्यवसाय को बदलने के लिए तैयार हैं?'}
-          </motion.h2>
-          <motion.p variants={fadeUp} className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            {language === 'en'
-              ? 'Start managing your shop efficiently today. No credit card required, no monthly fees.'
-              : 'आज ही अपनी दुकान को कुशलतापूर्वक प्रबंधित करना शुरू करें। क्रेडिट कार्ड की आवश्यकता नहीं, कोई मासिक शुल्क नहीं।'}
-          </motion.p>
-          <motion.div variants={fadeUp}>
-            <Button size="lg" onClick={() => setShowLogin(true)} className="text-base font-bold h-14 px-10 shadow-lg">
-              {language === 'en' ? 'Get Started Now - It\'s Free!' : 'अभी शुरू करें - यह मुफ़्त है!'}
-            </Button>
-          </motion.div>
+          <h2 className="text-3xl sm:text-4xl font-black mb-4">
+            {language === 'en' ? 'Ready to Transform Your Business?' : 'अपने व्यवसाय को बदलने के लिए तैयार?'}
+          </h2>
+          <p className="text-lg text-primary-foreground/80 mb-8 max-w-xl mx-auto">
+            {language === 'en' ? 'Start managing your shop efficiently today. Free forever.' : 'आज ही शुरू करें। हमेशा मुफ्त।'}
+          </p>
+          <Button size="lg" variant="secondary" onClick={() => setShowLogin(true)} className="text-base font-black h-14 px-10 shadow-xl gap-2">
+            {language === 'en' ? 'Get Started Now' : 'अभी शुरू करें'} <ArrowRight className="h-5 w-5" />
+          </Button>
         </motion.div>
       </section>
 
       {/* Footer */}
       <footer className="bg-foreground text-background/70 border-t border-border">
-        <div className="max-w-6xl mx-auto px-4 py-10">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center">
                 <Store className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
-                <p className="font-bold text-background text-base">Easy Shop</p>
-                <p className="text-sm text-background/50">
-                  {language === 'en' ? 'Smart Business Management' : 'स्मार्ट व्यवसाय प्रबंधन'}
-                </p>
+                <p className="font-bold text-background text-sm">Verma Fancy Store</p>
+                <p className="text-xs text-background/50">Powered by Easy Shop</p>
               </div>
             </div>
-            <p className="text-sm text-background/40">© {new Date().getFullYear()} Easy Shop. All rights reserved.</p>
+            <p className="text-xs text-background/40">© {new Date().getFullYear()} Verma Fancy Store. All rights reserved.</p>
           </div>
         </div>
       </footer>
 
       {/* Login Modal */}
-      {showLogin && (
-        <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          className="fixed inset-0 z-[100] bg-foreground/60 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={() => setShowLogin(false)}
-        >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            onClick={e => e.stopPropagation()}
+      <AnimatePresence>
+        {showLogin && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-foreground/60 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => setShowLogin(false)}
           >
-            <Card className="w-full max-w-md shadow-2xl">
-              <CardContent className="pt-8 pb-8 px-8">
-                <div className="text-center mb-6">
-                  <div className="h-20 w-20 mx-auto mb-4 rounded-2xl bg-primary flex items-center justify-center">
-                    <Store className="h-10 w-10 text-primary-foreground" />
+            <motion.div
+              initial={{ scale: 0.85, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.85, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              onClick={e => e.stopPropagation()}
+            >
+              <Card className="w-full max-w-sm shadow-2xl border-2">
+                <CardContent className="pt-8 pb-8 px-6">
+                  <div className="text-center mb-6">
+                    <motion.div whileHover={{ rotate: 5 }} className="h-16 w-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-xl shadow-primary/25">
+                      <Store className="h-8 w-8 text-primary-foreground" />
+                    </motion.div>
+                    <h2 className="text-xl font-black text-foreground">
+                      {language === 'en' ? 'Shop Manager Login' : 'शॉप मैनेजर लॉगिन'}
+                    </h2>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {language === 'en' ? 'Sign in to manage your business' : 'अपने व्यवसाय को प्रबंधित करने के लिए साइन इन करें'}
+                    </p>
                   </div>
-                  <h2 className="text-2xl font-bold text-foreground">
-                    {language === 'en' ? 'Shop Manager Login' : 'शॉप मैनेजर लॉगिन'}
-                  </h2>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    {language === 'en' ? 'Sign in to manage your business' : 'अपने व्यवसाय को प्रबंधित करने के लिए साइन इन करें'}
-                  </p>
-                </div>
-                <form onSubmit={handleLogin} className="space-y-5">
-                  <div>
-                    <Label htmlFor="shopName" className="text-sm font-medium">
-                      {language === 'en' ? 'Shop Name' : 'दुकान का नाम'}
-                    </Label>
-                    <Input
-                      id="shopName"
-                      value={shopNameInput}
-                      onChange={e => setShopNameInput(e.target.value)}
-                      placeholder={language === 'en' ? 'Enter shop name' : 'दुकान का नाम दर्ज करें'}
-                      className="mt-2 h-12 text-base"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="password" className="text-sm font-medium">
-                      {language === 'en' ? 'Password' : 'पासवर्ड'}
-                    </Label>
-                    <div className="relative mt-2">
-                      <Input
-                        id="password"
-                        type={showPassword ? 'text' : 'password'}
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                        placeholder={language === 'en' ? 'Enter password' : 'पासवर्ड दर्ज करें'}
-                        className="h-12 text-base pr-12"
+                  <form onSubmit={handleLogin} className="space-y-4">
+                    <div>
+                      <Label htmlFor="shopName" className="text-xs font-semibold">
+                        {language === 'en' ? 'Shop Name' : 'दुकान का नाम'}
+                      </Label>
+                      <Input id="shopName" value={shopNameInput} onChange={e => setShopNameInput(e.target.value)}
+                        placeholder={language === 'en' ? 'Enter shop name' : 'दुकान का नाम'} className="mt-1.5 h-11 text-sm"
                       />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                      </button>
                     </div>
-                  </div>
-                  <Button type="submit" className="w-full h-12 text-base font-bold">
-                    {language === 'en' ? 'Sign In' : 'साइन इन करें'}
-                  </Button>
-                  <p className="text-xs text-center text-muted-foreground">
-                    {language === 'en' ? 'Default password: admin123' : 'डिफ़ॉल्ट पासवर्ड: admin123'}
-                  </p>
-                </form>
-              </CardContent>
-            </Card>
+                    <div>
+                      <Label htmlFor="password" className="text-xs font-semibold">
+                        {language === 'en' ? 'Password' : 'पासवर्ड'}
+                      </Label>
+                      <div className="relative mt-1.5">
+                        <Input id="password" type={showPassword ? 'text' : 'password'} value={password}
+                          onChange={e => setPassword(e.target.value)}
+                          placeholder={language === 'en' ? 'Enter password' : 'पासवर्ड'} className="h-11 text-sm pr-12"
+                        />
+                        <button type="button" onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </div>
+                    <Button type="submit" className="w-full h-11 text-sm font-bold shadow-md shadow-primary/20">
+                      {language === 'en' ? 'Sign In' : 'साइन इन'}
+                    </Button>
+                    <p className="text-[10px] text-center text-muted-foreground">Default password: admin123</p>
+                  </form>
+                </CardContent>
+              </Card>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -7,7 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, Edit2, Trash2, IndianRupee, ChevronLeft, ChevronRight } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { Plus, Trash2, IndianRupee, ChevronLeft, ChevronRight, MoreVertical, Pencil, Users, Calendar, Wallet } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Employees() {
@@ -51,9 +52,7 @@ export default function Employees() {
     }));
   }, [calMonth]);
 
-  const getStatus = (empId: string, date: string) => {
-    return attendance.find(x => x.employeeId === empId && x.date === date)?.status || null;
-  };
+  const getStatus = (empId: string, date: string) => attendance.find(x => x.employeeId === empId && x.date === date)?.status || null;
 
   const statusColor = (s: string | null) => {
     if (s === 'Present') return 'bg-emerald-500 text-white';
@@ -86,46 +85,48 @@ export default function Employees() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-5">
         <div>
-          <h2 className="text-xl font-bold text-foreground">Employees</h2>
-          <p className="text-xs text-muted-foreground">{employees.length} staff members</p>
+          <h2 className="text-2xl font-black text-foreground flex items-center gap-2">
+            <Users className="h-6 w-6 text-primary" /> Employees
+          </h2>
+          <p className="text-sm text-muted-foreground font-medium">{employees.length} staff members</p>
         </div>
-        <div className="flex gap-1.5">
+        <div className="flex gap-2">
           <Dialog open={salaryOpen} onOpenChange={setSalaryOpen}>
-            <DialogTrigger asChild><Button variant="outline" size="sm" className="gap-1 text-xs"><IndianRupee className="h-3.5 w-3.5" />Pay</Button></DialogTrigger>
+            <DialogTrigger asChild><Button variant="outline" size="default" className="gap-2 font-bold h-11"><IndianRupee className="h-4 w-4" />Pay</Button></DialogTrigger>
             <DialogContent>
-              <DialogHeader><DialogTitle>Pay Salary</DialogTitle></DialogHeader>
-              <div className="space-y-3 pt-2">
+              <DialogHeader><DialogTitle className="text-lg font-black">Pay Salary</DialogTitle></DialogHeader>
+              <div className="space-y-4 pt-2">
                 <div>
-                  <Label className="text-xs">Employee</Label>
+                  <Label className="text-xs font-bold">Employee</Label>
                   <Select value={salaryForm.employeeId} onValueChange={v => {
                     const emp = employees.find(e => e.id === v);
                     setSalaryForm({ ...salaryForm, employeeId: v, amount: emp?.salary || 0 });
                   }}>
-                    <SelectTrigger className="h-10 mt-1"><SelectValue placeholder="Select" /></SelectTrigger>
-                    <SelectContent>{employees.map(e => <SelectItem key={e.id} value={e.id}>{e.name}</SelectItem>)}</SelectContent>
+                    <SelectTrigger className="h-11 mt-1"><SelectValue placeholder="Select" /></SelectTrigger>
+                    <SelectContent>{employees.map(e => <SelectItem key={e.id} value={e.id}>{e.name} - ₹{e.salary.toLocaleString()}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
-                <div><Label className="text-xs">Amount (₹)</Label><Input type="number" value={salaryForm.amount} onChange={e => setSalaryForm({ ...salaryForm, amount: +e.target.value })} className="h-10 mt-1" /></div>
-                <div><Label className="text-xs">Month</Label><Input type="month" value={salaryForm.month} onChange={e => setSalaryForm({ ...salaryForm, month: e.target.value })} className="h-10 mt-1" /></div>
-                <div><Label className="text-xs">Date</Label><Input type="date" value={salaryForm.date} onChange={e => setSalaryForm({ ...salaryForm, date: e.target.value })} className="h-10 mt-1" /></div>
-                <div><Label className="text-xs">Note</Label><Input value={salaryForm.note} onChange={e => setSalaryForm({ ...salaryForm, note: e.target.value })} className="h-10 mt-1" placeholder="Optional" /></div>
-                <Button onClick={handlePaySalary} className="w-full h-10 font-semibold">Pay Salary</Button>
+                <div><Label className="text-xs font-bold">Amount (₹)</Label><Input type="number" value={salaryForm.amount} onChange={e => setSalaryForm({ ...salaryForm, amount: +e.target.value })} className="h-11 mt-1" /></div>
+                <div><Label className="text-xs font-bold">Month</Label><Input type="month" value={salaryForm.month} onChange={e => setSalaryForm({ ...salaryForm, month: e.target.value })} className="h-11 mt-1" /></div>
+                <div><Label className="text-xs font-bold">Date</Label><Input type="date" value={salaryForm.date} onChange={e => setSalaryForm({ ...salaryForm, date: e.target.value })} className="h-11 mt-1" /></div>
+                <div><Label className="text-xs font-bold">Note</Label><Input value={salaryForm.note} onChange={e => setSalaryForm({ ...salaryForm, note: e.target.value })} className="h-11 mt-1" placeholder="Optional" /></div>
+                <Button onClick={handlePaySalary} className="w-full h-12 font-black text-base">Pay Salary</Button>
               </div>
             </DialogContent>
           </Dialog>
           <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) { setEditId(null); setForm({ name: '', phone: '', role: '', salary: 0, joinDate: new Date().toISOString().split('T')[0] }); } }}>
-            <DialogTrigger asChild><Button size="sm" className="gap-1 text-xs"><Plus className="h-3.5 w-3.5" />Add</Button></DialogTrigger>
+            <DialogTrigger asChild><Button size="default" className="gap-2 font-bold h-11"><Plus className="h-4 w-4" />Add</Button></DialogTrigger>
             <DialogContent>
-              <DialogHeader><DialogTitle>{editId ? 'Edit' : 'Add'} Employee</DialogTitle></DialogHeader>
-              <div className="space-y-3 pt-2">
-                <div><Label className="text-xs">Name</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="h-10 mt-1" /></div>
-                <div><Label className="text-xs">Phone</Label><Input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} className="h-10 mt-1" /></div>
-                <div><Label className="text-xs">Role</Label><Input value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} className="h-10 mt-1" placeholder="e.g. Cashier" /></div>
-                <div><Label className="text-xs">Salary (₹)</Label><Input type="number" value={form.salary} onChange={e => setForm({ ...form, salary: +e.target.value })} className="h-10 mt-1" /></div>
-                <div><Label className="text-xs">Join Date</Label><Input type="date" value={form.joinDate} onChange={e => setForm({ ...form, joinDate: e.target.value })} className="h-10 mt-1" /></div>
-                <Button onClick={handleSave} className="w-full h-10 font-semibold">{editId ? 'Update' : 'Add'}</Button>
+              <DialogHeader><DialogTitle className="text-lg font-black">{editId ? 'Edit' : 'Add'} Employee</DialogTitle></DialogHeader>
+              <div className="space-y-4 pt-2">
+                <div><Label className="text-xs font-bold">Name</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="h-11 mt-1" /></div>
+                <div><Label className="text-xs font-bold">Phone</Label><Input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} className="h-11 mt-1" /></div>
+                <div><Label className="text-xs font-bold">Role</Label><Input value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} className="h-11 mt-1" placeholder="e.g. Cashier" /></div>
+                <div><Label className="text-xs font-bold">Salary (₹)</Label><Input type="number" value={form.salary} onChange={e => setForm({ ...form, salary: +e.target.value })} className="h-11 mt-1" /></div>
+                <div><Label className="text-xs font-bold">Join Date</Label><Input type="date" value={form.joinDate} onChange={e => setForm({ ...form, joinDate: e.target.value })} className="h-11 mt-1" /></div>
+                <Button onClick={handleSave} className="w-full h-12 font-black text-base">{editId ? 'Update' : 'Add'}</Button>
               </div>
             </DialogContent>
           </Dialog>
@@ -133,55 +134,58 @@ export default function Employees() {
       </div>
 
       <Tabs defaultValue="grid">
-        <TabsList className="mb-3">
-          <TabsTrigger value="grid" className="text-xs">Attendance</TabsTrigger>
-          <TabsTrigger value="list" className="text-xs">Staff</TabsTrigger>
-          <TabsTrigger value="salary" className="text-xs">Salary</TabsTrigger>
+        <TabsList className="mb-4">
+          <TabsTrigger value="grid" className="text-sm font-bold gap-1.5"><Calendar className="h-4 w-4" /> Attendance</TabsTrigger>
+          <TabsTrigger value="list" className="text-sm font-bold gap-1.5"><Users className="h-4 w-4" /> Staff</TabsTrigger>
+          <TabsTrigger value="salary" className="text-sm font-bold gap-1.5"><Wallet className="h-4 w-4" /> Salary</TabsTrigger>
         </TabsList>
 
         <TabsContent value="grid">
-          <div className="flex items-center justify-between mb-2">
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={prevMonth}><ChevronLeft className="h-4 w-4" /></Button>
-            <h3 className="font-semibold text-xs">{new Date(calMonth + '-01').toLocaleString('default', { month: 'long', year: 'numeric' })}</h3>
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={nextMonth}><ChevronRight className="h-4 w-4" /></Button>
+          <div className="flex items-center justify-between mb-3">
+            <Button variant="ghost" size="icon" className="h-9 w-9" onClick={prevMonth}><ChevronLeft className="h-5 w-5" /></Button>
+            <h3 className="font-black text-sm">{new Date(calMonth + '-01').toLocaleString('default', { month: 'long', year: 'numeric' })}</h3>
+            <Button variant="ghost" size="icon" className="h-9 w-9" onClick={nextMonth}><ChevronRight className="h-5 w-5" /></Button>
           </div>
 
           {employees.length === 0 ? (
-            <p className="text-center py-8 text-muted-foreground text-xs">No employees</p>
+            <div className="text-center py-12 text-muted-foreground">
+              <Users className="h-10 w-10 mx-auto mb-3 opacity-40" />
+              <p className="text-sm font-medium">No employees yet</p>
+            </div>
           ) : (
-            <div className="overflow-x-auto border border-border rounded-lg">
-              <table className="w-full text-[10px]">
+            <div className="overflow-x-auto border-2 border-border rounded-2xl">
+              <table className="w-full text-[11px]">
                 <thead>
                   <tr className="bg-muted">
-                    <th className="sticky left-0 bg-muted px-2 py-1.5 text-left font-semibold min-w-[80px] border-r border-border">Name</th>
+                    <th className="sticky left-0 bg-muted px-3 py-2 text-left font-black min-w-[90px] border-r border-border">Name</th>
                     {calendarData.map(d => (
-                      <th key={d.date} className="px-0.5 py-1.5 text-center font-medium min-w-[26px] border-r border-border">{d.day}</th>
+                      <th key={d.date} className="px-0.5 py-2 text-center font-bold min-w-[28px] border-r border-border">{d.day}</th>
                     ))}
-                    <th className="px-1.5 py-1.5 text-center font-semibold min-w-[28px]">P</th>
-                    <th className="px-1.5 py-1.5 text-center font-semibold min-w-[28px]">A</th>
-                    <th className="px-1.5 py-1.5 text-center font-semibold min-w-[28px]">H</th>
+                    <th className="px-2 py-2 text-center font-black min-w-[30px] text-emerald-600">P</th>
+                    <th className="px-2 py-2 text-center font-black min-w-[30px] text-red-500">A</th>
+                    <th className="px-2 py-2 text-center font-black min-w-[30px] text-yellow-600">H</th>
                   </tr>
                 </thead>
                 <tbody>
                   {monthlySummary.map(emp => (
                     <tr key={emp.id} className="border-t border-border hover:bg-muted/50">
-                      <td className="sticky left-0 bg-card px-2 py-1 font-medium border-r border-border">
-                        <div className="truncate max-w-[80px]">{emp.name}</div>
+                      <td className="sticky left-0 bg-card px-3 py-1.5 font-bold border-r border-border">
+                        <div className="truncate max-w-[90px]">{emp.name}</div>
                       </td>
                       {calendarData.map(d => {
                         const status = getStatus(emp.id, d.date);
                         return (
                           <td key={d.date} className="px-0 py-0.5 text-center border-r border-border">
                             <button onClick={() => cycleStatus(emp.id, d.date)}
-                              className={`w-5 h-5 rounded text-[9px] font-bold ${statusColor(status)} hover:opacity-80 transition-opacity`}>
+                              className={`w-6 h-6 rounded-lg text-[10px] font-black ${statusColor(status)} hover:opacity-80 transition-opacity`}>
                               {statusLabel(status)}
                             </button>
                           </td>
                         );
                       })}
-                      <td className="px-1 py-1 text-center font-bold text-emerald-600">{emp.present}</td>
-                      <td className="px-1 py-1 text-center font-bold text-red-500">{emp.absent}</td>
-                      <td className="px-1 py-1 text-center font-bold text-yellow-600">{emp.halfDay}</td>
+                      <td className="px-1 py-1 text-center font-black text-emerald-600">{emp.present}</td>
+                      <td className="px-1 py-1 text-center font-black text-red-500">{emp.absent}</td>
+                      <td className="px-1 py-1 text-center font-black text-yellow-600">{emp.halfDay}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -189,39 +193,48 @@ export default function Employees() {
             </div>
           )}
 
-          <div className="flex gap-3 mt-2 text-[10px]">
-            <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-emerald-500" /><span>P</span></div>
-            <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-red-500" /><span>A</span></div>
-            <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-yellow-500" /><span>H</span></div>
-            <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-muted border border-border" /><span>—</span></div>
+          <div className="flex gap-4 mt-3 text-xs font-bold">
+            <div className="flex items-center gap-1.5"><div className="w-4 h-4 rounded bg-emerald-500" /><span>Present</span></div>
+            <div className="flex items-center gap-1.5"><div className="w-4 h-4 rounded bg-red-500" /><span>Absent</span></div>
+            <div className="flex items-center gap-1.5"><div className="w-4 h-4 rounded bg-yellow-500" /><span>Half Day</span></div>
           </div>
         </TabsContent>
 
         <TabsContent value="list">
           {employees.length === 0 ? (
-            <p className="text-center py-8 text-muted-foreground text-xs">No employees</p>
+            <div className="text-center py-12 text-muted-foreground">
+              <Users className="h-10 w-10 mx-auto mb-3 opacity-40" /><p className="text-sm font-medium">No employees</p>
+            </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {monthlySummary.map(e => (
-                <div key={e.id} className="stat-card">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="font-semibold text-sm">{e.name}</p>
-                      <p className="text-xs text-muted-foreground">{e.role} • {e.phone}</p>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">₹{e.salary.toLocaleString()}/mo • Joined: {e.joinDate}</p>
+                <Card key={e.id} className="border-2 border-border hover:border-primary/30 transition-all">
+                  <CardContent className="py-4 px-5">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="font-black text-base">{e.name}</p>
+                        <p className="text-sm text-muted-foreground font-medium">{e.role} • {e.phone}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">₹{e.salary.toLocaleString()}/mo • Joined: {e.joinDate}</p>
+                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8"><MoreVertical className="h-4 w-4" /></Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => startEdit(e)} className="gap-2"><Pencil className="h-4 w-4" /> Edit</DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => { deleteEmployee(e.id); toast.success('Deleted'); }} className="gap-2 text-destructive"><Trash2 className="h-4 w-4" /> Delete</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
-                    <div className="flex gap-0.5">
-                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => startEdit(e)}><Edit2 className="h-3.5 w-3.5" /></Button>
-                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => { deleteEmployee(e.id); toast.success('Deleted'); }}><Trash2 className="h-3.5 w-3.5 text-destructive" /></Button>
+                    <div className="flex gap-3 mt-2 text-xs">
+                      <span className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold px-2 py-1 rounded-lg">P: {e.present}</span>
+                      <span className="bg-red-500/10 text-red-500 font-bold px-2 py-1 rounded-lg">A: {e.absent}</span>
+                      <span className="bg-yellow-500/10 text-yellow-600 font-bold px-2 py-1 rounded-lg">H: {e.halfDay}</span>
+                      <span className="bg-muted font-bold px-2 py-1 rounded-lg">Paid: ₹{e.paid.toLocaleString()}</span>
                     </div>
-                  </div>
-                  <div className="flex gap-2 mt-1.5 text-[10px]">
-                    <span className="text-emerald-600 font-medium">P: {e.present}</span>
-                    <span className="text-red-500 font-medium">A: {e.absent}</span>
-                    <span className="text-yellow-600 font-medium">H: {e.halfDay}</span>
-                    <span className="text-muted-foreground">Paid: ₹{e.paid.toLocaleString()}</span>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           )}
@@ -229,18 +242,22 @@ export default function Employees() {
 
         <TabsContent value="salary">
           {salaryPayments.length === 0 ? (
-            <p className="text-center py-8 text-muted-foreground text-xs">No salary payments</p>
+            <div className="text-center py-12 text-muted-foreground">
+              <Wallet className="h-10 w-10 mx-auto mb-3 opacity-40" /><p className="text-sm font-medium">No salary payments</p>
+            </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {[...salaryPayments].reverse().map(p => (
-                <div key={p.id} className="stat-card flex justify-between items-center">
-                  <div>
-                    <p className="font-semibold text-sm">{p.employeeName}</p>
-                    <p className="text-xs text-muted-foreground">{p.month} • {p.date}</p>
-                    {p.note && <p className="text-[10px] text-muted-foreground">{p.note}</p>}
-                  </div>
-                  <span className="font-bold text-sm text-accent-foreground">₹{p.amount.toLocaleString()}</span>
-                </div>
+                <Card key={p.id} className="border-2 border-border hover:border-primary/30 transition-all">
+                  <CardContent className="py-4 px-5 flex justify-between items-center">
+                    <div>
+                      <p className="font-black text-base">{p.employeeName}</p>
+                      <p className="text-sm text-muted-foreground font-medium">{p.month} • {p.date}</p>
+                      {p.note && <p className="text-xs text-muted-foreground">{p.note}</p>}
+                    </div>
+                    <span className="font-black text-lg text-primary">₹{p.amount.toLocaleString()}</span>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           )}
