@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
@@ -91,20 +91,29 @@
   body {
     @apply bg-background text-foreground font-sans;
     font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold;
+    line-height: 1.3;
+  }
+  button {
+    @apply transition-colors duration-200;
   }
 }
 
 @layer components {
   .stat-card {
-    @apply bg-card rounded-xl p-5 shadow-sm border border-border transition-all hover:shadow-md;
+    @apply bg-card rounded-xl p-6 shadow-sm border-2 border-border transition-all hover:shadow-lg hover:border-primary/30;
   }
   .page-title {
-    @apply text-2xl font-bold text-foreground mb-1;
+    @apply text-3xl font-bold text-foreground mb-2;
   }
   .page-subtitle {
-    @apply text-sm text-muted-foreground mb-6;
+    @apply text-base text-muted-foreground mb-8;
   }
   .big-button {
-    @apply h-12 px-6 text-base font-semibold rounded-xl shadow-sm;
+    @apply h-12 px-8 text-base font-semibold rounded-xl shadow-sm hover:shadow-md transition-all;
   }
 }
